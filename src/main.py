@@ -96,7 +96,7 @@ def get_favorites(user_id):
     return jsonify(fav_ser)
 
 @app.route('/favorites/<int:user_id>/<string:uid>', methods=["GET"])
-# As for the add favorte, here with the UID the function should recognize if it's a planet or a character
+# As for the add favorite, here with the function should recognize if it's a planet or a character based on the uid
 def get_user_favorite(user_id, uid):
     element_id = uid[2:]
     favorite = None
