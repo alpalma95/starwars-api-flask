@@ -54,6 +54,40 @@ def people_list():
 
     return jsonify(people_serialized), 200
 
+@app.route('/people/<int:character_id>', methods=["GET"])
+def get_character_details(character_id):
+    character = Character.query.get(character_id)
+    char_ser = character.serialize()
+
+    return jsonify(char_ser)
+
+@app.route('/planets/<int:planet_id>', methods=["GET"])
+def get_planet_details(planet_id):
+    planet = Planet.query.get(planet_id)
+    planet_ser = planet.serialize()
+
+    return jsonify(planet_ser)
+
+@app.route('/favorites/<int:user_id>', methods=['POST'])
+def add_favorite(user_id):
+    request_body = request.get_json(force=True)
+
+    user = User.query.get(user_id)
+    uid = request_body["uid"]
+    element_id = uid[2:]
+    new_favorite = None
+
+    if uid.startswith("c"):
+        new_favorite = Favorite(user_id=user.id, character_id=element_id)
+    else:
+        new_favorite = Favorite(user_id=user.id, planet_id=element_id)
+
+    db.session.add(new_favorite)
+    db.session.commit()
+    
+
+    return jsonify(new_favorite.serialize())
+
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':

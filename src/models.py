@@ -43,16 +43,16 @@ class Character(db.Model):
             "hair_color": self.hair_color,
             "skin_color": self.skin_color,
             "eye_color": self.eye_color,
-            "birth_year": self.birth_year,
+            "year_of_birt": self.year_of_birt,
             "gender": self.gender,
-            "uid": self._id
+            "uid": self.uid
         }
     
     def serialize_basics(self):
         return {
             "id": self.id,
             "name": self.name,
-            "uid": self._id
+            "uid": self.uid
         }
 
 class Planet(db.Model):
@@ -100,7 +100,7 @@ class Favorite(db.Model):
     planet_id = db.Column(db.Integer, db.ForeignKey(Planet.id))
 
     def __repr__(self):
-        return '<Favorite {self.user_id}>'
+        return f'<Favorite {self.user_id}>'
     
     def serialize(self):
         return {
