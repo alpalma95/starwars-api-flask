@@ -30,6 +30,7 @@ class Character(db.Model):
     year_of_birt = db.Column(db.String(250))
     gender = db.Column(db.String(250))
     uid = db.Column(db.String(50))
+    children = db.relationship('Favorite', lazy=True)
 
     def __repr__(self):
         return '<Character %r>' % self.name
@@ -67,7 +68,7 @@ class Planet(db.Model):
     terrain = db.Column(db.String(250))
     surface_water = db.Column(db.Integer)
     uid = db.Column(db.String(50))
-
+    children = db.relationship('Favorite', lazy=True)
 
     def __repr__(self):
         return '<Planet %r>' % self.name

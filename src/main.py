@@ -30,7 +30,7 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
-@app.route('/user', methods=['GET'])
+@app.route('/users', methods=['GET'])
 def handle_hello():
 
     users = User.query.all()
@@ -68,7 +68,8 @@ def get_planet_details(planet_id):
 
     return jsonify(planet_ser)
 
-@app.route('/favorites/<int:user_id>', methods=['POST'])
+@app.route('/favorites/<int:user_id>', methods=['POST']) 
+# This unifies logic for planets and characters, hence no need to write 2 different endpoints
 def add_favorite(user_id):
     request_body = request.get_json(force=True)
 
@@ -88,6 +89,25 @@ def add_favorite(user_id):
 
     return jsonify(new_favorite.serialize())
 
+@app.route('/favorites/<int:user_id>', methods=["GET"])
+def get_favorites(user_id):
+    favorites = Favorite.query.filter_by(user_id=user_id)
+    fav_ser = list(map(lambda x: x.serialize(), favorites))
+    return jsonify(fav_ser)
+
+@app.route('/favorites/<int:user_id>/<string:uid>', methods=["GET"])
+# As for the add favorte, here with the UID the function should recognize if it's a planet or a character
+def get_user_favorite(user_id, uid):
+    element_id = uid[2:]
+    favorite = None
+
+    if uid.startswith("c"):
+        favorite = Favorite.query.filter_by(user_id=user_id, character_id=element_id).first()
+    else:
+        favorite = Favorite.query.filter_by(user_id=user_id, planet_id=element_id).first()
+    
+    favorite_sr = favorite.serialize()
+    return jsonify(favorite_sr)
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
